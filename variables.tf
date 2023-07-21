@@ -71,7 +71,7 @@ variable "vpc_id" {
 
 variable "subnet_ids" {
   type        = list(any)
-  description = "Subnet IDs wher ethe tailscale router resides."
+  description = "Subnet IDs where the Tailscale router resides."
 }
 
 variable "instance_count" {
