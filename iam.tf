@@ -1,49 +1,32 @@
 # -----------------------------------------------------------------------------
 # Tailscale Routers
 # -----------------------------------------------------------------------------
-resource "aws_iam_instance_profile" "this" {
-  name = local.base_name
-  role = aws_iam_role.this.name
+
+resource "aws_iam_role" "router" {
+  name               = local.base_name
+  assume_role_policy = data.aws_iam_policy_document.router_assume_role.json
 }
-resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
-  role       = aws_iam_role.this.name
+
+resource "aws_iam_role_policy_attachment" "ssm_managed" {
+  role       = aws_iam_role.router.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role" "this" {
-  name = local.base_name
-  inline_policy {
-    name = "allow-read-tailscale-auth-key-ssm-param"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action = [
-            "ssm:GetParameter",
-          ]
-          Effect = "Allow"
-          Resource = [
-            "arn:aws:ssm:${local.region}:${local.account_id}:${var.tailscale_oauth_client_id_ssm_param}",
-            "arn:aws:ssm:${local.region}:${local.account_id}:${var.tailscale_oauth_client_secret_ssm_param}"
-          ]
-        },
-      ]
-    })
-  }
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
-
+resource "aws_iam_policy" "router" {
+  name   = local.base_name
+  policy = data.aws_iam_policy_document.router_access.json
 }
+
+resource "aws_iam_role_policy_attachment" "router_role" {
+  role       = aws_iam_role.router.name
+  policy_arn = aws_iam_policy.router.arn
+}
+
+resource "aws_iam_instance_profile" "router" {
+  name = local.base_name
+  role = aws_iam_role.router.name
+}
+
 
 # -----------------------------------------------------------------------------
 # Refresh Lambda

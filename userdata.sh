@@ -15,7 +15,7 @@ oauth_client_secret=$(aws ssm get-parameter --name "${tailscale_oauth_client_sec
 access_token=$(curl -s -d "client_id=$oauth_client_id" -d "client_secret=$oauth_client_secret" \
               "https://api.tailscale.com/api/v2/oauth/token" | jq -r .access_token)
 
-result=$(curl -sX POST "https://api.tailscale.com/api/v2/tailnet/harrison.ai/keys" \
+result=$(curl -sX POST "https://api.tailscale.com/api/v2/tailnet/${tailscale_tailnet}/keys" \
       -u "$access_token:" \
       -H "Content-Type: application/json" \
       --data-binary '{

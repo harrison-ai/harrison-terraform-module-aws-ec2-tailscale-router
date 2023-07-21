@@ -6,8 +6,16 @@ data "aws_caller_identity" "current" {}
 # Tailscale Router
 # ------------------------------------------------------------------------------
 
+# Block if required SSM parameters don't exist 
+data "aws_ssm_parameter" "tailscale_oauth_client_id_ssm_param" {
+  name = var.tailscale_oauth_client_id_ssm_param
+}
+data "aws_ssm_parameter" "tailscale_oauth_client_secret_ssm_param" {
+  name = var.tailscale_oauth_client_secret_ssm_param
+}
+
 # Latest Amazon Linux 2 AMI
-data "aws_ami" "this" {
+data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
   filter {
@@ -26,11 +34,33 @@ data "aws_ami" "this" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-  filter {
-    name   = "block-device-mapping.volume-type"
-    values = ["gp2"]
+}
+
+
+data "aws_iam_policy_document" "router_access" {
+  statement {
+    actions = [
+      "ssm:GetParameter",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:ssm:${local.region}:${local.account_id}:${var.tailscale_oauth_client_id_ssm_param}",
+      "arn:aws:ssm:${local.region}:${local.account_id}:${var.tailscale_oauth_client_secret_ssm_param}"
+    ]
   }
 }
+
+data "aws_iam_policy_document" "router_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
 
 # User data script that runs when the tailscale router stats
 data "template_file" "user_data" {
@@ -40,6 +70,7 @@ data "template_file" "user_data" {
     tailscale_oauth_client_secret_ssm_param = var.tailscale_oauth_client_secret_ssm_param
     tailscale_tags                          = jsonencode(var.tailscale_tags)
     tailscale_machine_name                  = var.tailscale_machine_name
+    tailscale_tailnet                       = var.tailscale_tailnet
     advertised_routes                       = join(",", var.advertised_routes)
   }
 }
@@ -84,7 +115,7 @@ data "aws_iam_policy_document" "refresh_lambda" {
     actions = ["autoscaling:StartInstanceRefresh"]
 
     resources = [
-      aws_autoscaling_group.this.arn,
+      aws_autoscaling_group.router.arn,
     ]
   }
 
@@ -105,7 +136,7 @@ data "aws_iam_policy_document" "refresh_lambda" {
     ]
 
     resources = [
-      aws_launch_template.this.arn
+      aws_launch_template.router.arn
     ]
   }
 

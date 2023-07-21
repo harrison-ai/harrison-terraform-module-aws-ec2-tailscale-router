@@ -36,6 +36,11 @@ variable "tailscale_tags" {
   description = "Tailscale Tags for the device. Must match the Tailscale OAuth client."
 }
 
+variable "tailscale_tailnet" {
+  type        = string
+  description = "Tailscale tailnet name as it appears in the console."
+}
+
 variable "advertised_routes" {
   type        = list(string)
   description = "Routes that this tailscale router should handle."

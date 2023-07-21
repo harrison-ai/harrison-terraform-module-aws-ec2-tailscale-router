@@ -12,7 +12,7 @@ resource "aws_lambda_function" "refresh" {
 
   environment {
     variables = {
-      AUTO_SCALING_GROUP_NAME = aws_autoscaling_group.this.name
+      AUTO_SCALING_GROUP_NAME = aws_autoscaling_group.router.name
     }
   }
 }
