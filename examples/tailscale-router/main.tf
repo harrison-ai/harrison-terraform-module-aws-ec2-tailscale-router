@@ -24,6 +24,8 @@ module "test_router" {
 
   # Name of the tailscale machine as it appears in the console. 
   tailscale_machine_name = "test"
+  # Name of the tailnet as per the tailscale console
+  tailscale_tailnet = "mytailnet"
   # Routes these tailscale routers will advertise.
   advertised_routes = ["192.168.0.0/24"]
   # Tags associated with the OIDC client created in Tailscale.
