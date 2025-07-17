@@ -3,7 +3,14 @@ resource "aws_launch_template" "router" {
   description   = "Launch template for Tailscale router"
   image_id      = data.aws_ami.amazon_linux_2.id
   instance_type = var.instance_type
-  user_data     = base64encode(data.template_file.user_data.rendered)
+  user_data = base64encode(templatefile("${path.module}/userdata.sh", {
+    tailscale_oauth_client_id_ssm_param     = var.tailscale_oauth_client_id_ssm_param
+    tailscale_oauth_client_secret_ssm_param = var.tailscale_oauth_client_secret_ssm_param
+    tailscale_tags                          = jsonencode(var.tailscale_tags)
+    tailscale_machine_name                  = var.tailscale_machine_name
+    tailscale_tailnet                       = var.tailscale_tailnet
+    advertised_routes                       = join(",", var.advertised_routes)
+  }))
 
   vpc_security_group_ids = [aws_security_group.router.id]
 
