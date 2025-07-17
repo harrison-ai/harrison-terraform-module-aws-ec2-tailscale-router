@@ -61,20 +61,6 @@ data "aws_iam_policy_document" "router_assume_role" {
   }
 }
 
-
-# User data script that runs when the tailscale router stats
-data "template_file" "user_data" {
-  template = file("${path.module}/userdata.sh")
-  vars = {
-    tailscale_oauth_client_id_ssm_param     = var.tailscale_oauth_client_id_ssm_param
-    tailscale_oauth_client_secret_ssm_param = var.tailscale_oauth_client_secret_ssm_param
-    tailscale_tags                          = jsonencode(var.tailscale_tags)
-    tailscale_machine_name                  = var.tailscale_machine_name
-    tailscale_tailnet                       = var.tailscale_tailnet
-    advertised_routes                       = join(",", var.advertised_routes)
-  }
-}
-
 # ------------------------------------------------------------------------------
 # Refresh Lambda
 # ------------------------------------------------------------------------------

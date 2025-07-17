@@ -11,16 +11,16 @@ You must configure an OIDC client in the Tailscale console and install the ID an
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.4 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
+| <a name="requirement_archive"></a> [archive](#requirement\_archive) | >= 2.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_archive"></a> [archive](#provider\_archive) | n/a |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
-| <a name="provider_template"></a> [template](#provider\_template) | n/a |
+| <a name="provider_archive"></a> [archive](#provider\_archive) | >= 2.7 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 
@@ -55,7 +55,6 @@ No modules.
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_ssm_parameter.tailscale_oauth_client_id_ssm_param](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.tailscale_oauth_client_secret_ssm_param](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
-| [template_file.user_data](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
@@ -69,7 +68,7 @@ No modules.
 | <a name="input_resource_name"></a> [resource\_name](#input\_resource\_name) | Resource name for AWS resources. | `string` | `"tailscale-router"` | no |
 | <a name="input_resource_prefix"></a> [resource\_prefix](#input\_resource\_prefix) | Resource prefix for AWS resources. | `string` | `""` | no |
 | <a name="input_resource_suffix"></a> [resource\_suffix](#input\_resource\_suffix) | Resource suffix for AWS resources. | `string` | `""` | no |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs wher ethe tailscale router resides. | `list(any)` | n/a | yes |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs where the Tailscale router resides. | `list(any)` | n/a | yes |
 | <a name="input_tailscale_machine_name"></a> [tailscale\_machine\_name](#input\_tailscale\_machine\_name) | Tailscale machine name override. | `string` | n/a | yes |
 | <a name="input_tailscale_oauth_client_id_ssm_param"></a> [tailscale\_oauth\_client\_id\_ssm\_param](#input\_tailscale\_oauth\_client\_id\_ssm\_param) | Tailscale OAuth client ID SSM parameter path. | `string` | n/a | yes |
 | <a name="input_tailscale_oauth_client_secret_ssm_param"></a> [tailscale\_oauth\_client\_secret\_ssm\_param](#input\_tailscale\_oauth\_client\_secret\_ssm\_param) | Tailscale OAuth client secret SSM parameter path. | `string` | n/a | yes |
