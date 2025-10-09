@@ -3,7 +3,7 @@ resource "aws_lambda_function" "refresh" {
   description      = "Tailscale refresh lamba"
   handler          = "lambda.handler"
   role             = aws_iam_role.refresh_lambda.arn
-  runtime          = "python3.9"
+  runtime          = "python3.13"
   memory_size      = 128
   timeout          = 10
   architectures    = ["arm64"]
