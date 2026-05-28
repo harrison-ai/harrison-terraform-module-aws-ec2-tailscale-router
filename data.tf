@@ -6,7 +6,7 @@ data "aws_caller_identity" "current" {}
 # Tailscale Router
 # ------------------------------------------------------------------------------
 
-# Block if required SSM parameters don't exist 
+# Block if required SSM parameters don't exist
 data "aws_ssm_parameter" "tailscale_oauth_client_id_ssm_param" {
   name = var.tailscale_oauth_client_id_ssm_param
 }
@@ -15,7 +15,7 @@ data "aws_ssm_parameter" "tailscale_oauth_client_secret_ssm_param" {
 }
 
 # Latest Amazon Linux 2 AMI
-data "aws_ami" "amazon_linux_2" {
+data "aws_ami" "this" {
   most_recent = true
   owners      = ["amazon"]
   filter {
@@ -28,7 +28,7 @@ data "aws_ami" "amazon_linux_2" {
   }
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*"]
+    values = ["al2023-ami-2023.*"]
   }
   filter {
     name   = "virtualization-type"

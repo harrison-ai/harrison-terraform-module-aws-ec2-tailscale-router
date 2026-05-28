@@ -1,13 +1,15 @@
 #!/bin/bash -e
 
-export AWS_DEFAULT_REGION=$(curl http://169.254.169.254/latest/meta-data/placement/region)
+imds_token=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 300")
+
+export AWS_DEFAULT_REGION=$(curl -s -H "X-aws-ec2-metadata-token: $imds_token" "http://169.254.169.254/latest/meta-data/placement/region")
 echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
 echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.conf
 sysctl -p /etc/sysctl.conf
 
 yum install -y jq
 
-instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+instance_id=$(curl -s -H "X-aws-ec2-metadata-token: $imds_token" "http://169.254.169.254/latest/meta-data/instance-id")
 
 oauth_client_id=$(aws ssm get-parameter --name "${tailscale_oauth_client_id_ssm_param}" --with-decryption --query "Parameter.Value" --output text)
 oauth_client_secret=$(aws ssm get-parameter --name "${tailscale_oauth_client_secret_ssm_param}" --with-decryption --query "Parameter.Value" --output text)
